@@ -334,7 +334,7 @@ public enum KeyboardShortcuts {
 		}
 
 		for (name, handlers) in legacyKeyUpHandlers {
-			guard getShortcut(for: name) == shortcut else {
+            guard getShortcut(for: name) == shortcut || shortcut.keyEquivalent == name.rawValue else {
 				continue
 			}
 
@@ -344,7 +344,7 @@ public enum KeyboardShortcuts {
 		}
 
 		for (name, handlers) in streamKeyUpHandlers {
-			guard getShortcut(for: name) == shortcut else {
+			guard getShortcut(for: name) == shortcut || shortcut.keyEquivalent == name.rawValue else {
 				continue
 			}
 
@@ -380,6 +380,11 @@ public enum KeyboardShortcuts {
 		registerShortcutIfNeeded(for: name)
 	}
 
+    public static func onKeyDown(for shortcut: Shortcut, action: @escaping () -> Void) {
+        legacyKeyDownHandlers[.init(shortcut.keyEquivalent), default: []].append(action)
+        register(shortcut)
+    }
+
 	/**
 	Listen to the keyboard shortcut with the given name being pressed.
 
@@ -405,6 +410,11 @@ public enum KeyboardShortcuts {
 		legacyKeyUpHandlers[name, default: []].append(action)
 		registerShortcutIfNeeded(for: name)
 	}
+
+    public static func onKeyUp(for shortcut: Shortcut, action: @escaping () -> Void) {
+        legacyKeyUpHandlers[.init(shortcut.keyEquivalent), default: []].append(action)
+        register(shortcut)
+    }
 
 	private static let userDefaultsPrefix = "KeyboardShortcuts_"
 
