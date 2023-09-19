@@ -460,6 +460,12 @@ public enum KeyboardShortcuts {
 		userDefaultsDidChange(name: name)
 	}
 
+    public static func disable(_ shortcut: Shortcut) {
+        unregister(shortcut)
+        legacyKeyUpHandlers[.init(shortcut.keyEquivalent)] = nil
+        legacyKeyDownHandlers[.init(shortcut.keyEquivalent)] = nil
+    }
+
 	static func userDefaultsContains(name: Name) -> Bool {
 		UserDefaults.standard.object(forKey: userDefaultsKey(for: name)) != nil
 	}
